@@ -1,43 +1,64 @@
-# Bookbot Project
-
-# Functions
 def get_text(path):
     with open(path) as f:
-        file_contents = f.read()
-    return file_contents
+        text = f.read()
+    return text
 
-def word_count(file_contents):
-    count = len(file_contents.split())
+def word_count(text):
+    count = len(text.split())
     return count
 
-def char_count(file_contents):
+def sort_on(d):
+    return d["num"]
+
+def char_count(text):
+    chars = []
+    lowered = text.lower()
+    for ch in lowered:
+        if ch not in chars and ch.isalpha():
+            chars.append(ch)
+    return chars
+
+def get_chars_dict(text):
     chars = {}
-    for c in file_contents:
+    alphas = char_count(text)
+    for c in text:
         lowered = c.lower()
-        if lowered in chars:
+        if lowered in chars and lowered in alphas:
             chars[lowered] += 1
-        else: 
+        elif lowered not in chars and lowered in alphas:
             chars[lowered] = 1
     return chars
 
-def sort_on(chars):
-    return chars["Qty"]
+def make_sorted_list(charst):
+    sorted_list = []
+    for ch in charst:
+        sorted_list.append({"char": ch, "num":charst[ch]})
+    sorted_list.sort(reverse=True, key=sort_on)
+    return sorted_list
 
-# Main Loop
+
 def main():
     path = "books/frankenstein.txt"
-    file_contents = get_text(path)
-    print(file_contents)
-
-    print("======================================")
+    title = "Frankenstein, by Mary Shelley"
+    text = get_text(path)
+    words = word_count(text)
+    print(text)
     print("")
-    count = word_count(file_contents)
-    print(f"Total words in file: {count}")
-    chars = char_count(file_contents)
-    list_of_dict = [{"key": key, "value": value} for key, value in chars.items()]
-    sorted_list = []
-    for item in list_of_dict:
-        if list_of_dict[item].isalpha():
-            print(f"The {item} as found {value} times")
+    print(f"=========================================================")
+    print(f"=========================================================")
+    print(f"===== Begin report on {title} =====")
+    print(f"=========================================================")
+    print("")
+    print(f"There were {words} words in this document")
+    print("")
+    charst = get_chars_dict(text)
+    sorted = make_sorted_list(charst)
+    for item in sorted: 
+        print(f"The '{item['char']}' character was found {item['num']} times")
+    print("")
+    print(f"=========================================================")
+    print(f"===================== End of Report =====================")
+    print(f"=========================================================")
+    print(f"=========================================================")
 
 main()
